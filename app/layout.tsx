@@ -1,15 +1,21 @@
-import { Geist, Geist_Mono } from "next/font/google"
+import { Geist, Geist_Mono, Nunito } from "next/font/google"
 
 import "./globals.css"
 import { ThemeProvider } from "@/components/theme-provider"
 import { cn } from "@/lib/utils";
+import { Metadata } from "next";
+import { Header } from "@/components/shared/header";
 
-const geist = Geist({subsets:['latin'],variable:'--font-sans'})
-
-const fontMono = Geist_Mono({
-  subsets: ["latin"],
-  variable: "--font-mono",
+const nunito = Nunito({
+  subsets: ['cyrillic'],
+  variable: '--font-nunito',
+  weight: ['400', '500', '600', '700', '800', '900'],
 })
+
+export const metadata: Metadata = {
+  title: 'Next Pizza | Главная',
+  
+}
 
 export default function RootLayout({
   children,
@@ -20,10 +26,13 @@ export default function RootLayout({
     <html
       lang="en"
       suppressHydrationWarning
-      className={cn("antialiased", fontMono.variable, "font-sans", geist.variable)}
+      
     >
-      <body>
-        <ThemeProvider>{children}</ThemeProvider>
+      <body className={nunito.className}>
+        <main className="min-h-screen">
+          <Header/>
+          {children}
+        </main>
       </body>
     </html>
   )
