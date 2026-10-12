@@ -7,7 +7,7 @@ interface Props {
 export const ProductCard: React.FC<Props> = ({ className }) => {
     return (
         <div className={className}>
-            
+            hello
         </div>
     );
 };
