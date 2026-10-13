@@ -1,9 +1,13 @@
+
+
 import React from 'react';
 import { Title } from './title';
 import { FilterCheckbox } from './filter-checkbox';
-import { Input } from '../ui';
+import { Button, Input } from '../ui';
 import { RangeSlider } from './range-slider';
 import { CheckboxFiltersGroup } from './checkbox-filters-group';
+import {RadioGroup, RadioGroupItem} from '../ui'
+import {Label} from '../ui'
 
 interface Props {
     className?: string;
@@ -113,6 +117,31 @@ export const Filters: React.FC<Props> = ({ className }) => {
                 },
               ]}
             />
+
+            <div className='mt-8 flex flex-col gap-2'>
+                <p className='font-bold mb-3'>Тип теста</p>
+                <RadioGroup
+                  defaultValue='1'
+                  className='flex flex-col gap-4'
+                  
+                >
+                  <div className='flex items-center gap-2'>
+                    <RadioGroupItem value='1' id='test-1'/>
+                    <Label htmlFor='test-1' className='cursor-pointer text-base'>
+                      Традиционое
+                    </Label>
+                  </div>
+                  
+                  <div className='flex items-center gap-2'>
+                    <RadioGroupItem value='2' id='test-2'/>
+                    <Label htmlFor='test-2' className='cursor-pointer text-base'>
+                      Тонкое
+                    </Label>
+                  </div>
+                </RadioGroup>
+            </div>
+
+            <Button className='mt-5 w-full'>Применить</Button>
         </div>
     );
 };
