@@ -1,10 +1,5 @@
-import { Geist, Geist_Mono, Nunito } from "next/font/google"
-
+import { Nunito } from "next/font/google"
 import "./globals.css"
-import { ThemeProvider } from "@/components/theme-provider"
-import { cn } from "@/lib/utils";
-import { Metadata } from "next";
-import { Header } from "@/components/shared/header";
 
 const nunito = Nunito({
   subsets: ['cyrillic'],
@@ -12,10 +7,13 @@ const nunito = Nunito({
   weight: ['400', '500', '600', '700', '800', '900'],
 })
 
-export const metadata: Metadata = {
-  title: 'Next Pizza | Главная',
-  
-}
+import type { Metadata } from "next";
+
+export const metadata: Metadata = {  
+  icons: {
+    icon: "/logo.png",
+  },
+};
 
 export default function RootLayout({
   children,
@@ -24,15 +22,11 @@ export default function RootLayout({
 }>) {
   return (
     <html
-      lang="en"
-      suppressHydrationWarning
-      
+      lang="en"            
     >
+      
       <body className={nunito.className}>
-        <main className="min-h-screen">
-          <Header/>
-          {children}
-        </main>
+        {children}
       </body>
     </html>
   )

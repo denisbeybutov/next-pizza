@@ -4,10 +4,11 @@ import {cn} from '@/lib/utils'
 interface Props {
     className?: string;
     imageUrl: string;
-    size: number;
+    size: 20 | 30 | 40;
 }
 
 export const ProductImage: React.FC<Props> = ({imageUrl, size, className }) => {
+  
     return (
         <div className={cn('flex items-center justify-center flex-1 relative w-full', className)}>
             <img
@@ -19,6 +20,7 @@ export const ProductImage: React.FC<Props> = ({imageUrl, size, className }) => {
                 'w-125 h-125' : size === 40,
               })}
             />
+
 
             <div className='absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 border-dashed border-2 rounded-full border-gray-200 w-112.5 h-112.5'></div>
             <div className='absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 border-dotted border-2 rounded-full border-gray-100 w-92.5 h-92.5'></div>
