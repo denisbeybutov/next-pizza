@@ -1,6 +1,6 @@
 'use client'
 
-import { cn } from "@/lib/utils"
+import { cn } from "@/shared/lib/utils"
 import React from "react"
 
 type Variant = {
@@ -12,7 +12,7 @@ type Variant = {
 interface Props {
   items: readonly Variant[]
   onClick?: (value: Variant["value"]) => void
-  selectedValue?: Variant["value"]
+  value?: Variant["value"]
   className?: string
 }
 
@@ -20,7 +20,7 @@ export const GroupVariants: React.FC<Props> = ({
   items,
   onClick,
   className,
-  selectedValue,
+  value,
 }) => {
   return (
     <div
@@ -33,8 +33,8 @@ export const GroupVariants: React.FC<Props> = ({
         <button 
           key={item.name}
           onClick={() => onClick?.(item.value)}
-          className={cn('flex items-center justify-center cursor-pointer h-[30px] px-5 flex-1 rounded-3xl transition-all duration-400 text-sm', {
-            'bg-white shasow' : item.value === selectedValue,
+          className={cn('flex items-center justify-center cursor-pointer h-7.5 px-5 flex-1 rounded-3xl transition-all duration-400 text-sm', {
+            'bg-white shadow' : item.value === value,
             'text-gray-500 opacity-50 pointer-events-none' : item.disabled 
           },
         )}

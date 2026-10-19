@@ -1,10 +1,10 @@
 import { Geist, Geist_Mono, Nunito } from "next/font/google"
 
 import "../globals.css"
-import { ThemeProvider } from "@/components/theme-provider"
-import { cn } from "@/lib/utils";
+import { ThemeProvider } from "@/shared/components/theme-provider"
+import { cn } from "@/shared/lib/utils";
 import { Metadata } from "next";
-import { Header } from "@/components/shared/header";
+import { Header } from "@/shared/components/shared/header";
 
 const nunito = Nunito({
   subsets: ['cyrillic'],
