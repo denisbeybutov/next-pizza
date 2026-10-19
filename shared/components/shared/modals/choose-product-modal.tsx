@@ -14,15 +14,18 @@ interface Props {
   className?: string
 }
 
-export const ChooseProductModal: React.FC<Props> = ({ product, className }) => {
+export const ChooseProductModal: React.FC<Props> = ({ 
+  product,
+  className
+}) => {
   const router = useRouter()
   const isPizzaForm = Boolean(product.items[0].pizzaType)
-
+  console.log(product)
   return (
     <Dialog open={Boolean(product)} onOpenChange={() => router.back()}>
       <DialogContent
         className={cn(
-          "min-h-[500px] w-[1060px] max-w-[1060px] overflow-hidden bg-white p-0",
+          "min-h-125 w-265 max-w-265 overflow-hidden bg-white p-0",
           className
         )}
       >
@@ -31,6 +34,7 @@ export const ChooseProductModal: React.FC<Props> = ({ product, className }) => {
             imageUrl={product.imageUrl}
             name={product.name}
             ingredients={product.ingredients}
+            items={product.items}
           />
         ) : (
           <ChooseProductForm imageUrl={product.imageUrl} name={product.name} />

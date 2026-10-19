@@ -5,25 +5,27 @@ import { Title } from "./title";
 import { Button } from "../ui";
 import { GroupVariants } from "./group-variants";
 import { PizzaSize, pizzaSizes, PizzaType, pizzaTypes } from "@/shared/constants/pizza";
-import { Ingredient } from "@prisma/client";
+import { Ingredient, ProductItem } from "@prisma/client";
 import { IngredientItem } from "./ingredient-item";
 import { useSet } from "react-use";
+
 
 interface Props {
   imageUrl: string;
   name: string;
   className?: string;
   ingredients: Ingredient[];
-  items?: any[];
-  onClickAdd?: VoidFunction;
+  items: ProductItem[];
+  onClickAddCart?: VoidFunction;
 }
 
 export const ChoosePizzaForm: React.FC<Props> = ({
   name,
+  items,
   imageUrl,
   className,
   ingredients,
-  onClickAdd
+  onClickAddCart
 }) => {
   const [size, setSize] = React.useState<PizzaSize>(20);
   const [type, setType] = React.useState<PizzaType>(1);
@@ -31,7 +33,14 @@ export const ChoosePizzaForm: React.FC<Props> = ({
   const [selectedIngredients, {toggle: addIngredient}] = useSet(new Set<number>([]))
 
   const textDetails = "30 см, традиционное тесто";
-  const totalPrice = 350;
+  
+  const pizzaPrice = items.find((item) => item.pizzaType === type && item.size === size)!.price;
+
+  const totalIngredientsPrice = ingredients
+    .filter((ingredient) => selectedIngredients.has(ingredient.id))
+    .reduce((acc,ingredient) => acc + ingredient.price,0)
+
+  const totalPrice = pizzaPrice + totalIngredientsPrice;
   
   
   return (
