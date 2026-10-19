@@ -1,22 +1,24 @@
-import { cn } from "@/shared/lib/utils";
-import React from "react";
-import { PizzaImage } from "./pizza-image";
-import { Title } from "./title";
-import { Button } from "../ui";
-import { GroupVariants } from "./group-variants";
-import { mapPizzaType, PizzaSize, pizzaSizes, PizzaType, pizzaTypes } from "@/shared/constants/pizza";
-import { Ingredient, ProductItem } from "@prisma/client";
-import { IngredientItem } from "./ingredient-item";
-import { useSet } from "react-use";
+'use client'
 
+import { cn } from "@/shared/lib/utils"
+import React from "react"
+import { PizzaImage } from "./pizza-image"
+import { Title } from "./title"
+import { Button } from "../ui"
+import { GroupVariants } from "./group-variants"
+import { PizzaSize, PizzaType, pizzaTypes } from "@/shared/constants/pizza"
+import { Ingredient, ProductItem } from "@prisma/client"
+import { IngredientItem } from "./ingredient-item"
+import { getPizzaDetails } from "@/shared/lib"
+import { usePizzaOptions } from "@/shared/hooks"
 
 interface Props {
-  imageUrl: string;
-  name: string;
-  className?: string;
-  ingredients: Ingredient[];
-  items: ProductItem[];
-  onClickAddCart?: VoidFunction;
+  imageUrl: string
+  name: string
+  className?: string
+  ingredients: Ingredient[]
+  items: ProductItem[]
+  onClickAddCart?: VoidFunction
 }
 
 export const ChoosePizzaForm: React.FC<Props> = ({
@@ -25,107 +27,83 @@ export const ChoosePizzaForm: React.FC<Props> = ({
   imageUrl,
   className,
   ingredients,
-  onClickAddCart
+  onClickAddCart,
 }) => {
-  const [size, setSize] = React.useState<PizzaSize>(20);
-  const [type, setType] = React.useState<PizzaType>(1);
+  const {
+    size,
+    type,
+    selectedIngredients,
+    availableSizes,
+    setSize,
+    setType,
+    addIngredient,
+  } = usePizzaOptions(items)
 
-  const [selectedIngredients, {toggle: addIngredient}] = useSet(new Set<number>([]))
-  
-  const pizzaPrice = items.find((item) => item.pizzaType === type && item.size === size)?.price || 0;
+  const { totalPrice, textDetails } = getPizzaDetails(
+    type,
+    size,
+    items,
+    ingredients,
+    selectedIngredients
+  )
 
-  const totalIngredientsPrice = ingredients
-    .filter((ingredient) => selectedIngredients.has(ingredient.id))
-    .reduce((acc,ingredient) => acc + ingredient.price,0)
-
-  const totalPrice = pizzaPrice + totalIngredientsPrice;
-
-  const textDetails =  `${size} см, ${mapPizzaType[type]} тесто, ингредиенты: ${ingredients
-    .filter((ingredient) => selectedIngredients.has(ingredient.id))
-    .map((ingredient) => ingredient.name.toLowerCase())
-    .join(', ')
-  }`;
-  
   const handleClick = () => {
-    onClickAddCart?.();
+    onClickAddCart?.()
     console.log({
       size,
       type,
       ingredients: ingredients
         .filter((ingredient) => selectedIngredients.has(ingredient.id))
-        .map((ingredient) => ingredient.name)
+        .map((ingredient) => ingredient.name),
     })
   }
-  
-  const availablePizzas = items.filter((item) => item.pizzaType === type)
-  const availablePizzaSizes = pizzaSizes.map((item) => ({
-    name: item.name,
-    value: item.value,
-    disabled: !availablePizzas.some((pizza) => Number(pizza.size) === Number(item.value))
-  }))
-
-  React.useEffect(()=>{
-    const isAvailableSize = availablePizzaSizes?.find((item) => Number(item.value) === size && !item.disabled)
-    const availableSize = availablePizzaSizes?.find((item) => !item.disabled);
-
-    if(!isAvailableSize && availableSize) {
-      setSize(Number(availableSize.value) as PizzaSize)
-    }
-  },[type])
-
-  console.log(items, availablePizzas)
 
   return (
-    <div className={cn("flex w-full min-h-125", className)}>
+    <div className={cn("flex min-h-125 w-full", className)}>
       {/* Левая часть — картинка */}
-      <div className="flex flex-1 items-center justify-center relative w-full ">
-        <PizzaImage imageUrl={imageUrl} size={size}/>
+      <div className="relative flex w-full flex-1 items-center justify-center">
+        <PizzaImage imageUrl={imageUrl} size={size} />
       </div>
 
       {/* Правая часть — информация и кнопка */}
-      <div className="flex w-125 shrink-0 flex-col justify-start bg-[#f7f6f5] p-7 rounded-r-xl">
-        
-          <Title
-            text={name}
-            size="md"
-            className="mb-1 font-extrabold"
-          />
-          <p className="text-gray-400">{textDetails}</p>
-        <div className="flex flex-col gap-4 mt-5">
-
-          
+      <div className="flex w-125 shrink-0 flex-col justify-start rounded-r-xl bg-[#f7f6f5] p-7">
+        <Title text={name} size="md" className="mb-1 font-extrabold" />
+        <p className="text-gray-400">{textDetails}</p>
+        <div className="mt-5 flex flex-col gap-4">
           <GroupVariants
-            items={availablePizzaSizes}
+            items={availableSizes}
             value={String(size)}
-            onClick={value => setSize(Number(value) as PizzaSize)}
+            onClick={(value) => setSize(Number(value) as PizzaSize)}
           />
           <GroupVariants
             items={pizzaTypes}
             value={String(type)}
-            onClick={value => setType(Number(value) as PizzaType)}
+            onClick={(value) => setType(Number(value) as PizzaType)}
           />
         </div>
 
-        <div className="bg-gray-50 p-5 rounded-md h-105 overflow-auto scrollbar mt-5">
+        <div className="scrollbar mt-5 h-105 overflow-auto rounded-md bg-gray-50 p-5">
           <div className="grid grid-cols-3 gap-3">
             {ingredients.map((ingredient) => (
-              <IngredientItem 
+              <IngredientItem
                 key={ingredient.id}
                 name={ingredient.name}
                 price={ingredient.price}
                 imageUrl={ingredient.imageUrl}
                 onClick={() => addIngredient(ingredient.id)}
-                active={selectedIngredients.has(ingredient.id)}                
-              />              
+                active={selectedIngredients.has(ingredient.id)}
+              />
             ))}
           </div>
         </div>
 
-
-        <Button onClick={handleClick} className="h-13.75 w-full rounded-[18px] px-5 text-base mt-10">
+        <Button
+          onClick={handleClick}
+          className="mt-10 h-13.75 w-full rounded-[18px] px-5 text-base"
+        >
           Добавить в корзину за {totalPrice} ₽
         </Button>
       </div>
     </div>
-  );
-};
+  )
+}
