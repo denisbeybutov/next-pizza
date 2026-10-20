@@ -35,14 +35,14 @@ export const CartDrawer: React.FC<React.PropsWithChildren<Props>> = ({ children,
 
             <div className='overflow-auto  flex-1'>
               <div className='mb-2'>
-                <CartDrawerItem 
+                {/* <CartDrawerItem 
                   id={1}
                   imageUrl={'https://media.dodostatic.net/image/r:233x233/11EE7D61304FAF5A98A6958F2BB2D260.webp'}
                   details={getCartItemDetails(2,30,[{name: 'Цыпленок'},{name: 'сыр'}])}
                   name={'Чоризо фреш'}
                   price={419}
                   quantity={1}
-                />
+                /> */}
               </div>
             </div>
 
