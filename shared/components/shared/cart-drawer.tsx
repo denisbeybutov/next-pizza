@@ -46,6 +46,8 @@ export const CartDrawer: React.FC<React.PropsWithChildren<Props>> = ({ children,
               </div>
             </div>
 
+            <div></div>
+
             <SheetFooter className=' bg-white p-8'>
               <div className='w-full'>
                 <div className='flex mb-4'>
