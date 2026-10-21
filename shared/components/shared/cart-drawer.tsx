@@ -26,10 +26,11 @@ interface Props {
 }
 
 export const CartDrawer: React.FC<React.PropsWithChildren<Props>> = ({ children,className }) => {
-  const [totalAmount, fetchCartItems, items] = useCartStore(
+  const [totalAmount, fetchCartItems, updateItemQuantity, items] = useCartStore(
     useShallow((state) => [
       state.totalAmount,
       state.fetchCartItems,
+      state.updateItemQuantity,
       state.items,
     ])
   );
@@ -38,6 +39,10 @@ export const CartDrawer: React.FC<React.PropsWithChildren<Props>> = ({ children,
       fetchCartItems()
     },[])
 
+    const onClickCountButton = (id: number, quantity: number, type: 'plus' | 'minus') => {
+      const newQuantity = type === 'plus' ? quantity +1 : quantity -1;
+      updateItemQuantity(id, newQuantity);
+    }
     return (
         <Sheet>
           <SheetTrigger asChild>{children}</SheetTrigger>
@@ -68,6 +73,7 @@ export const CartDrawer: React.FC<React.PropsWithChildren<Props>> = ({ children,
                     name={item.name}
                     price={item.price}
                     quantity={item.quantity}
+                    onClickCountButton={(type) => onClickCountButton(item.id, item.quantity, type)}
                   />
                 ))
               }
