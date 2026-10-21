@@ -50,20 +50,27 @@ export const CartDrawer: React.FC<React.PropsWithChildren<Props>> = ({ children,
 
             <div className='overflow-auto  flex-1'>
               <div className='mb-2'>
-                { 
-                  items.map((item) => (
-                    <CartDrawerItem 
-                      key={item.id}
-                      id={item.id}
-                      imageUrl={item.imageUrl}
-                      details={item.pizzaSize && item.pizzaType ? getCartItemDetails(item.pizzaType as PizzaType,item.pizzaSize as PizzaSize,item.ingredients) : ''}
-                      name={item.name}
-                      price={item.price}
-                      quantity={item.quantity}
-                    />
-                  ))
-                }
-                
+              {
+                items.map((item) => (
+                  <CartDrawerItem
+                    key={item.id}
+                    id={item.id}
+                    imageUrl={item.imageUrl}
+                    details={
+                      item.pizzaSize && item.pizzaType
+                        ? getCartItemDetails(
+                            item.pizzaType as PizzaType,
+                            item.pizzaSize as PizzaSize,
+                            item.ingredients
+                          )
+                        : ''
+                    }
+                    name={item.name}
+                    price={item.price}
+                    quantity={item.quantity}
+                  />
+                ))
+              }
               </div>
             </div>
 
