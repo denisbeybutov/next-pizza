@@ -18,6 +18,7 @@ interface Props {
   className?: string
   ingredients: Ingredient[]
   items: ProductItem[]
+  loading?: boolean
   onSubmit?: (itemId: number, ingredients: number[]) => void
 }
 
@@ -27,6 +28,7 @@ export const ChoosePizzaForm: React.FC<Props> = ({
   imageUrl,
   className,
   ingredients,
+  loading,
   onSubmit,
 }) => {
   const {
@@ -95,6 +97,7 @@ export const ChoosePizzaForm: React.FC<Props> = ({
         </div>
 
         <Button
+          loading={loading}
           onClick={handleClick}
           className="mt-10 h-13.75 w-full rounded-[18px] px-5 text-base"
         >

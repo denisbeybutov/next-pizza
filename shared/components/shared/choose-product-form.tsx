@@ -7,8 +7,9 @@ interface Props {
   imageUrl: string;
   name: string;
   price: number;
-  className?: string;
+  loading?: boolean;
   onSubmit?: VoidFunction;
+  className?: string;
 }
 
 /*
