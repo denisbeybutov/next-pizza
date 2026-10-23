@@ -31,7 +31,7 @@ export default async function ProductPage({ params }: Props) {
         <p className="text-gray-400">Lorem ipsum dolor sit amet consectetur, adipisicing elit. Incidunt, quia?</p>
 
         <GroupVariants
-          selectedValue='2'
+          value='2'
           items={[
           
           {

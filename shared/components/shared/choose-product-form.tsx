@@ -22,6 +22,7 @@ export const ChooseProductForm: React.FC<Props> = ({
   imageUrl,
   onSubmit,
   className,
+  loading
 }) => {
   
   return (
@@ -42,7 +43,7 @@ export const ChooseProductForm: React.FC<Props> = ({
           
         </div>
 
-        <Button onClick={onSubmit} className="h-13.75 w-full rounded-[18px] px-5 text-base mt-10">
+        <Button loading={loading} onClick={() => onSubmit?.()} className="h-13.75 w-full rounded-[18px] px-5 text-base mt-10">
           Добавить в корзину за {price} ₽
         </Button>
       </div>
