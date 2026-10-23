@@ -4,6 +4,7 @@ import { ProductCard } from "@/shared/components/shared/product-card"
 import { ProductsGroupList } from "@/shared/components/shared/products-group-list"
 import { TopBar } from "@/shared/components/shared/top-bar"
 import { prisma } from "@/prisma/prisma-client"
+import { Suspense } from "react"
 
 export default async function Page() {
   const categories = await prisma.category.findMany({
@@ -31,7 +32,10 @@ export default async function Page() {
           
           {/* Фильтрация */}
           <div className="w-62.5">
-            <Filters/>
+            <Suspense>
+              <Filters/>
+            </Suspense>
+            
             
           </div>          
 
