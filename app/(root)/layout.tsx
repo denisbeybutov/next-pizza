@@ -1,22 +1,19 @@
-import { Metadata } from "next";
+import type { Metadata } from "next";
 import { Header } from "@/shared/components/shared/header";
 
 export const metadata: Metadata = {
-  title: 'Next Pizza | Главная',  
-}
+  title: "Next Pizza | Главная",
+};
 
 export default function HomeLayout({
   children,
-  modal
 }: Readonly<{
-  children: React.ReactNode
-  modal: React.ReactNode;
+  children: React.ReactNode;
 }>) {
-  return (   
-        <main className="min-h-screen">
-          <Header/>
-          {children}
-          {modal}
-        </main>    
-  )
+  return (
+    <main className="min-h-screen">
+      <Header />
+      {children}
+    </main>
+  );
 }
