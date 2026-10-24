@@ -3,9 +3,10 @@ import { mapPizzaType, PizzaSize, PizzaType } from "../constants/pizza";
 import { CartStateItem } from "./get-cart-details";
 
 export const getCartItemDetails = (
-  pizzaType: PizzaType,
-  pizzaSize: PizzaSize,
-  ingredients: CartStateItem['ingredients']
+  ingredients: CartStateItem['ingredients'],
+  pizzaType?: PizzaType,
+  pizzaSize?: PizzaSize,
+  
 ) => {
   const details =[];
 
