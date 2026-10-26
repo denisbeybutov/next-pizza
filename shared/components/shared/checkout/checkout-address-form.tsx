@@ -19,7 +19,7 @@ interface Props {
 export const CheckoutAddressForm: React.FC<Props> = ({ className }) => {
   const { control } = useFormContext()
   return (
-    <WhiteBlock title="3. Адрес доставки">
+    <WhiteBlock className={className} title="3. Адрес доставки">
       <div className="flex flex-col gap-5">
         <Controller
           control={control}
