@@ -6,9 +6,7 @@ import {
   CheckoutSidebar,
   Container,
   Title,
-  WhiteBlock,
 } from "@/shared/components/shared"
-import { Input, Textarea } from "@/shared/components/ui"
 import { useCart } from "@/shared/hooks"
 import {
   CheckoutAddressForm,
@@ -26,6 +24,7 @@ export default function CheckoutPage() {
 
   const form = useForm<CheckoutFormValues>({
     resolver: zodResolver(checkoutFormSchema),
+    mode: "onBlur",
     defaultValues: {
       email: "",
       firstName: "",

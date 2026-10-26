@@ -28,10 +28,10 @@ export const FormInput: React.FC<Props> = ({
   } = useFormContext();
 
   const value = watch(name);
-  const errorText = errors[name]?.message as string;
+  const errorText = errors[name]?.message as string | undefined;
 
   const onClickClear = () => {
-    setValue(name, "")
+    setValue(name, "",{shouldValidate: true})
     
   }
 
@@ -51,7 +51,7 @@ export const FormInput: React.FC<Props> = ({
         {value && <ClearButton onClick={onClickClear} />}
       </div>
 
-      {ErrorText && <ErrorText text={errorText} className="mt-2"/>}
+      {errorText && <ErrorText text={errorText} className="mt-2" />}
     </div>
   )    
     
