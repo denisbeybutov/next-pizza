@@ -11,12 +11,14 @@ interface Props {
   totalAmount: number
   loading?: boolean
   className?: string
+  submitting?: boolean
 }
 
 export const CheckoutSidebar: React.FC<Props> = ({
   totalAmount,
   loading,
   className,
+  submitting,
 }) => {
   const vatPrice = (totalAmount * VAT) / 100
   const totalPrice = totalAmount + DELIVER_PRICE + vatPrice
@@ -61,6 +63,7 @@ export const CheckoutSidebar: React.FC<Props> = ({
       />
 
       <Button
+        loading={loading}
         type="submit"
         className="mt-6 h-14 w-full rounded-2xl text-base font-bold"
       >

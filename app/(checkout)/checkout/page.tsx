@@ -1,12 +1,8 @@
 "use client"
 
-import { useForm, SubmitHandler, FormProvider } from "react-hook-form"
+import { useForm, FormProvider } from "react-hook-form"
 
-import {
-  CheckoutSidebar,
-  Container,
-  Title,
-} from "@/shared/components/shared"
+import { CheckoutSidebar, Container, Title } from "@/shared/components/shared"
 import { useCart } from "@/shared/hooks"
 import {
   CheckoutAddressForm,
@@ -18,10 +14,14 @@ import {
   CheckoutFormValues,
 } from "@/shared/components/shared/checkout/checkout-form-schema"
 import { zodResolver } from "@hookform/resolvers/zod"
-import { cn } from "@/shared/lib/utils"
+import { createOreder } from "@/app/actions"
+import toast from "react-hot-toast"
+import React from "react"
 
 export default function CheckoutPage() {
-  const { totalAmount, updateItemQuantity, items, removeCartItem, loading } = useCart()
+  const [submitting, setSubmitting] = React.useState(false)
+  const { totalAmount, updateItemQuantity, items, removeCartItem, loading } =
+    useCart()
 
   const form = useForm<CheckoutFormValues>({
     resolver: zodResolver(checkoutFormSchema),
@@ -36,8 +36,25 @@ export default function CheckoutPage() {
     },
   })
 
-  const onSubmit = (data : CheckoutFormValues) => {
-    console.log(data)
+  const onSubmit = async (data: CheckoutFormValues) => {
+    try {
+      setSubmitting(true)
+      const url = await createOreder(data)
+
+      toast.error("Заказ успешно оформлен! переход на оплату...", {
+        icon: "✅",
+      })
+
+      if (url) {
+        location.href = url
+      }
+    } catch (err) {
+      console.log(err);
+      setSubmitting(false);
+      toast.error("Не удалось создать заказ", {
+        icon: "❌",
+      })
+    } 
   }
 
   const onClickCountButton = (
@@ -68,18 +85,25 @@ export default function CheckoutPage() {
                 loading={loading}
               />
 
-              <CheckoutPersonalForm className={loading ? "opacity-40 pointer-events-none" : ''}/>
+              <CheckoutPersonalForm
+                className={loading ? "pointer-events-none opacity-40" : ""}
+              />
 
-              <CheckoutAddressForm className={loading ? "opacity-40 pointer-events-none" : ''}/>
+              <CheckoutAddressForm
+                className={loading ? "pointer-events-none opacity-40" : ""}
+              />
             </div>
 
             {/*Правая часть */}
             <div className="w-112.5">
-              <CheckoutSidebar totalAmount={totalAmount} loading={loading}/>{" "}
+              <CheckoutSidebar
+                submitting={submitting}
+                totalAmount={totalAmount}
+                loading={loading || submitting}
+              />{" "}
             </div>
           </div>
         </form>
-        
       </FormProvider>
     </Container>
   )
