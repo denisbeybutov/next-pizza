@@ -1,16 +1,13 @@
 "use client"
 
 import React from "react"
-import { cn } from "@/shared/lib/utils"
 import { Container } from "./container"
 import Image from "next/image"
-import { Button } from "../ui"
-import { ArrowRight, ShoppingCart, User } from "lucide-react"
 import Link from "next/link"
 import { SearchInput } from "./search-input"
 import { CartButton } from "./cart-button"
-import { useSession, signIn } from "next-auth/react"
 import { ProfileButton } from "./profile-button"
+import { AuthModal } from "./modals"
 
 interface Props {
   hasSearch?: boolean
@@ -23,9 +20,8 @@ export const Header: React.FC<Props> = ({
   hasCart = true,
   className,
 }) => {
-  
+  const [openAuthModal, setOpenAuthModal] = React.useState(false)
 
-  
   return (
     <header className={className}>
       <Container className="flex items-center justify-between py-8">
@@ -50,7 +46,12 @@ export const Header: React.FC<Props> = ({
 
         {/* Правая часть */}
         <div className="flex items-center gap-3">
-          <ProfileButton/>
+          <AuthModal
+            open={openAuthModal}
+            onClose={() => setOpenAuthModal(false)}
+          />
+
+          <ProfileButton onClickSignIn={() => setOpenAuthModal(true)} />
 
           {hasCart && <CartButton />}
         </div>
