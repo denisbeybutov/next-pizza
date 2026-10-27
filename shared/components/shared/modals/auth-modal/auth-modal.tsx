@@ -2,6 +2,7 @@ import { Button, Dialog } from '@/shared/components/ui';
 import { DialogContent } from '@/shared/components/ui/dialog';
 import { signIn } from 'next-auth/react';
 import React from 'react';
+import { LoginForm } from './forms/login-form';
 
 interface Props {
   open: boolean;
@@ -9,14 +10,21 @@ interface Props {
 }
 
 export const AuthModal: React.FC<Props> = ({open, onClose}) => {
+  const [type, setType] = React.useState<'login' | 'register'>('login');
 
+  const onSwitchType = () => {
+    setType(type ==='login' ? 'register' : 'login')
+  }
   const handleClose = () => {
     onClose();
   };
     return (
         <Dialog open={open} onOpenChange={handleClose}>
-            <DialogContent className='w-[450px] bg-white p-10 '>
-              FORM
+            <DialogContent className='w-112.5 bg-white p-10 '>
+              
+              {
+                type === 'login' ? <LoginForm onClose={handleClose}/> : <h1>REGISTER</h1>
+              }
 
               <hr />
 
@@ -51,6 +59,10 @@ export const AuthModal: React.FC<Props> = ({open, onClose}) => {
 
 
               </div>
+
+              <Button variant='outline' onClick={onSwitchType} type='button' className='h-12'>
+                {type === 'login' ? 'Войти' : 'Регистрация'}
+              </Button>
             </DialogContent>
         </Dialog>
     );
