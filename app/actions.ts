@@ -2,6 +2,8 @@
 
 import { prisma } from "@/prisma/prisma-client";
 import { CheckoutFormValues } from "@/shared/components/shared/checkout/checkout-form-schema";
+import { PayOrderTemplate } from "@/shared/components/shared"
+import { sendEmail } from "@/shared/lib";
 import { OrderStatus } from "@prisma/client";
 import { cookies } from "next/headers";
 
@@ -76,12 +78,19 @@ export async function createOreder(data: CheckoutFormValues) {
     })
 
     //TODO сделать создание ссылки оплаты
-
-
+    await sendEmail(
+      data.email,
+      `Next Pizza / Оплатите заказ №${order.id}`,
+      {
+        orderId: order.id,
+        totalAmount: order.totalAmount,
+        paymentUrl: 'https://www.google.com/',
+      }
+    );
   } catch (err){
-
+    console.log('[Create Order] Server error', err)
   }
   
 
-  return 'https://github.com/denisbeybutov/next-pizza/pull/7';
+  return "/checkout/payment";
 }
