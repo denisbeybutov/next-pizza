@@ -10,6 +10,7 @@ import Link from "next/link"
 import { SearchInput } from "./search-input"
 import { CartButton } from "./cart-button"
 import { useSession, signIn } from "next-auth/react"
+import { ProfileButton } from "./profile-button"
 
 interface Props {
   hasSearch?: boolean
@@ -22,9 +23,9 @@ export const Header: React.FC<Props> = ({
   hasCart = true,
   className,
 }) => {
-  const { data: session } = useSession()
+  
 
-  console.log(session, 999)
+  
   return (
     <header className={className}>
       <Container className="flex items-center justify-between py-8">
@@ -49,17 +50,7 @@ export const Header: React.FC<Props> = ({
 
         {/* Правая часть */}
         <div className="flex items-center gap-3">
-          <Button
-            onClick={() => signIn("github", {
-              callbackUrl: '/',
-              redirect: true,
-            })}
-            variant="outline"
-            className="flex items-center gap-2"
-          >
-            <User size={16} />
-            Войти
-          </Button>
+          <ProfileButton/>
 
           {hasCart && <CartButton />}
         </div>
