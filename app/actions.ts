@@ -91,6 +91,6 @@ export async function createOreder(data: CheckoutFormValues) {
     console.log('[Create Order] Server error', err)
   }
   
-
+  // заглушка для оплаты
   return "/checkout/payment";
 }

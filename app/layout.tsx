@@ -9,6 +9,7 @@ const nunito = Nunito({
 });
 
 import type { Metadata } from "next";
+import { Providers } from "@/shared/components/shared/providers";
 
 export const metadata: Metadata = {
   icons: {
@@ -26,9 +27,11 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={nunito.className}>
-        {children}
-        {modal}
-        <Toaster />
+       <Providers>
+       {children}
+       {modal}
+       </Providers>
+        
       </body>
     </html>
   );

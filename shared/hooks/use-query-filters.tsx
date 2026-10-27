@@ -9,6 +9,7 @@ import {
 } from "next/navigation";
 
 export const useQueryFilters = (filters: Filters) => {
+  
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
@@ -28,12 +29,17 @@ export const useQueryFilters = (filters: Filters) => {
   );
 
   React.useEffect(() => {
-    const currentQuery = searchParams.toString();
+    
+      const currentQuery = searchParams.toString();
 
     if (query === currentQuery) return;
 
     const nextUrl = query ? `${pathname}?${query}` : pathname;
 
     router.replace(nextUrl, { scroll: false });
+    
+    
+
+    
   }, [query, pathname, searchParams, router]);
 };
