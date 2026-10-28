@@ -1,14 +1,25 @@
-import NextAuth from "next-auth";
+import NextAuth, { type NextAuthOptions } from "next-auth";
 import GitHubProvider from "next-auth/providers/github";
 import  CredentialsProvider  from "next-auth/providers/credentials";
 import { prisma } from "@/prisma/prisma-client";
-import { compare } from "bcrypt";
+import { compare, hashSync } from "bcrypt";
+import { UserRole } from "@prisma/client";
 
-export const authOptions = {
+
+export const authOptions: NextAuthOptions = {
   providers: [
     GitHubProvider({
       clientId: process.env.GITHUB_ID || "",
       clientSecret: process.env.GITHUB_SECRET || "",
+      profile(profile){
+        return {
+          id: profile.id,
+          name: profile.name || profile.login,
+          email: profile.email,
+          image: profile.avatar_url,
+          role: 'USER' as UserRole
+        }
+      }
     }),
     CredentialsProvider({
       name: 'Credentials',
@@ -17,47 +28,47 @@ export const authOptions = {
         password: { label: 'Password', type: 'password'},
       },
       
-async authorize(credentials) {
-  if (!credentials?.email || !credentials?.password) {
-    console.log('[AUTH] Email или пароль не переданы');
-    return null;
-  }
+      async authorize(credentials) {
+        if (!credentials?.email || !credentials?.password) {
+          console.log('[AUTH] Email или пароль не переданы');
+          return null;
+        }
 
-  const findUser = await prisma.user.findFirst({
-    where: {
-      email: credentials.email,
-    },
-  });
+        const findUser = await prisma.user.findFirst({
+          where: {
+            email: credentials.email,
+          },
+        });
 
-  if (!findUser) {
-    console.log('[AUTH] Пользователь не найден');
-    return null;
-  }
+        if (!findUser) {
+          console.log('[AUTH] Пользователь не найден');
+          return null;
+        }
 
-  const isPasswordValid = await compare(
-    credentials.password,
-    findUser.password
-  );
+        const isPasswordValid = await compare(
+          credentials.password,
+          findUser.password
+        );
 
-  if (!isPasswordValid) {
-    console.log('[AUTH] Неверный пароль');
-    return null;
-  }
+        if (!isPasswordValid) {
+          console.log('[AUTH] Неверный пароль');
+          return null;
+        }
 
-  if (!findUser.verified) {
-    console.log('[AUTH] Email не подтверждён');
-    return null;
-  }
+        if (!findUser.verified) {
+          console.log('[AUTH] Email не подтверждён');
+          return null;
+        }
 
-  console.log('[AUTH] Авторизация успешна');
+        console.log('[AUTH] Авторизация успешна');
 
-  return {
-    id: String(findUser.id),
-    email: findUser.email,
-    name: findUser.fullName,
-    role: findUser.role,
-  };
-}
+        return {
+          id: String(findUser.id),
+          email: findUser.email,
+          name: findUser.fullName,
+          role: findUser.role,
+        };
+      }
 
     })
   ],
@@ -66,7 +77,60 @@ async authorize(credentials) {
     strategy: 'jwt'
   },
   callbacks: {
+    async signIn({user,account}){
+      try {
+        if (account?.provider === 'credentials') {
+          return true;
+        }
+
+        if(!user.email) {
+          return false;
+        }
+
+        const findUser = await prisma.user.findFirst({
+          where: {
+            OR: [
+              {provider: account?.provider, providerId: account?.providerAccountId},
+              {email: user.email},
+            ]
+          }
+        })
+
+        if(findUser) {
+          await prisma.user.update({
+            where: {
+              id: findUser.id
+            },
+            data: {
+              provider: account?.provider,
+              providerId: account?.providerAccountId
+            }
+          });
+
+          return true;
+        }
+
+        await prisma.user.create({
+          data: {
+            email: user.email,
+            fullName: user.name || 'User #' + user.id,
+            password: hashSync(user.id.toString(), 10),
+            verified: new Date(),
+            provider: account?.provider,
+            providerId: account?.providerAccountId,
+          }
+        });
+        return true;
+      } catch(error) {
+        console.error('Error [SIGNIN]', error);
+        return false;
+      }
+    },
     async jwt({token}){
+      if (!token.email) {
+        return token;
+      }
+
       const findUser = await prisma.user.findFirst({
         where: {
           email: token.email,
