@@ -1,15 +1,16 @@
 "use client"
 
 import React from "react"
-import { cn } from "@/shared/lib/utils"
 import { Container } from "./container"
 import Image from "next/image"
-import { Button } from "../ui"
-import { ArrowRight, ShoppingCart, User } from "lucide-react"
 import Link from "next/link"
 import { SearchInput } from "./search-input"
 import { CartButton } from "./cart-button"
-import { useSession, signIn } from "next-auth/react"
+import { ProfileButton } from "./profile-button"
+import { AuthModal } from "./modals"
+import { useSearchParam } from "react-use"
+import { useRouter, useSearchParams } from "next/navigation"
+import toast from "react-hot-toast"
 
 interface Props {
   hasSearch?: boolean
@@ -22,9 +23,22 @@ export const Header: React.FC<Props> = ({
   hasCart = true,
   className,
 }) => {
-  const { data: session } = useSession()
+  const router = useRouter();
+  const [openAuthModal, setOpenAuthModal] = React.useState(false)
 
-  console.log(session, 999)
+  const serachParams = useSearchParams();
+
+  React.useEffect(() => {
+    if (!serachParams.has('verified')) return;
+  
+    toast.success('Почта успешно подтверждена', {
+      id: 'email-verified',
+      duration: 3000,
+    });
+  
+    router.replace('/');
+  }, [serachParams, router]);
+
   return (
     <header className={className}>
       <Container className="flex items-center justify-between py-8">
@@ -49,17 +63,12 @@ export const Header: React.FC<Props> = ({
 
         {/* Правая часть */}
         <div className="flex items-center gap-3">
-          <Button
-            onClick={() => signIn("github", {
-              callbackUrl: '/',
-              redirect: true,
-            })}
-            variant="outline"
-            className="flex items-center gap-2"
-          >
-            <User size={16} />
-            Войти
-          </Button>
+          <AuthModal
+            open={openAuthModal}
+            onClose={() => setOpenAuthModal(false)}
+          />
+
+          <ProfileButton onClickSignIn={() => setOpenAuthModal(true)} />
 
           {hasCart && <CartButton />}
         </div>

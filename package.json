@@ -12,7 +12,8 @@
     "typecheck": "tsc --noEmit",
     "prisma:push": "prisma db push",
     "prisma:studio": "prisma studio",
-    "prisma:seed": "prisma db seed"
+    "prisma:seed": "prisma db seed",
+    "postinstall": "prisma generate"
   },
   "prisma": {
     "seed": "tsx prisma/seed.ts"
@@ -41,6 +42,7 @@
     "react-dom": "19.3.0",
     "react-hook-form": "^7.91.0",
     "react-hot-toast": "^2.6.1",
+    "react-insta-stories": "^3.0.3",
     "react-use": "^17.6.1",
     "resend": "^6.34.1",
     "shadcn": "^4.21.4",
