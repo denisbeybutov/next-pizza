@@ -32,7 +32,7 @@ export const AuthModal: React.FC<Props> = ({open, onClose}) => {
                 <Button
                 variant='secondary'
                 onClick={() => signIn('github', {
-                  callback: '/',
+                  callbackUrl: '/',
                   redirect: true,
                 })
                 }
@@ -46,7 +46,7 @@ export const AuthModal: React.FC<Props> = ({open, onClose}) => {
                 <Button
                 variant='secondary'
                 onClick={() => signIn('google', {
-                  callback: '/',
+                  callbackUrl: '/',
                   redirect: true,
                 })
                 }

@@ -9,6 +9,7 @@ import { FormInput } from '../../../form-components';
 import { Button } from '@/shared/components/ui';
 import toast from 'react-hot-toast';
 import { signIn } from 'next-auth/react';
+import { useRouter } from 'next/navigation';
 
 interface Props {
     onClose?: VoidFunction;
@@ -16,7 +17,7 @@ interface Props {
 
 
 export const LoginForm: React.FC<Props> = ({ onClose }) => {
-
+  const router = useRouter();
   const form = useForm<TFormLoginValues>({
     resolver: zodResolver(formLoginSchema),
     defaultValues: {
@@ -39,7 +40,7 @@ export const LoginForm: React.FC<Props> = ({ onClose }) => {
         icon: '✅',
       })
       onClose?.();
-
+      router.replace('/');
     } catch(error) {
       console.error('Error [LOGIN]', error);
       toast.error('Не удалось войти в аккаунт', {
