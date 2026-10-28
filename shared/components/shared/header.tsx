@@ -8,6 +8,9 @@ import { SearchInput } from "./search-input"
 import { CartButton } from "./cart-button"
 import { ProfileButton } from "./profile-button"
 import { AuthModal } from "./modals"
+import { useSearchParam } from "react-use"
+import { useRouter, useSearchParams } from "next/navigation"
+import toast from "react-hot-toast"
 
 interface Props {
   hasSearch?: boolean
@@ -20,7 +23,21 @@ export const Header: React.FC<Props> = ({
   hasCart = true,
   className,
 }) => {
+  const router = useRouter();
   const [openAuthModal, setOpenAuthModal] = React.useState(false)
+
+  const serachParams = useSearchParams();
+
+  React.useEffect(() => {
+    if (!serachParams.has('verified')) return;
+  
+    toast.success('Почта успешно подтверждена', {
+      id: 'email-verified',
+      duration: 3000,
+    });
+  
+    router.replace('/');
+  }, [serachParams, router]);
 
   return (
     <header className={className}>
