@@ -1,5 +1,5 @@
 
-import { Container, Filters, Title } from "@/shared/components/shared"
+import { Container, Filters, Title, Stories  } from "@/shared/components/shared"
 import { ProductsGroupList } from "@/shared/components/shared/products-group-list"
 import { TopBar } from "@/shared/components/shared/top-bar"
 import { Suspense } from "react"
@@ -16,8 +16,13 @@ export default async function Page( {searchParams} : {searchParams: Promise<GetS
         <Title text='Все пиццы' size='lg' className="font-extrabold"/>        
       </Container>
 
+      
+
       <TopBar categories={categories.filter((category) => category.products.length > 0)}/>
 
+
+      <Stories/>
+      
       <Container className="mt-10 pb-14">
         <div className="flex gap-20">
           
