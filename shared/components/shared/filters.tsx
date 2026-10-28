@@ -121,7 +121,7 @@ export const Filters: React.FC<Props> = ({ className }) => {
         selected={filters.selectedIngredients}
       />
 
-      <Button className="mt-5 w-full">Применить</Button>
+      {/* <Button className="mt-5 w-full">Применить</Button> */}
     </div>
   );
 };
