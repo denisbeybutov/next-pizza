@@ -1,6 +1,11 @@
+
 "use client"
 
 import { useForm, FormProvider } from "react-hook-form"
+import React, { Suspense } from "react"
+import { useSession } from "next-auth/react"
+import { zodResolver } from "@hookform/resolvers/zod"
+import toast from "react-hot-toast"
 
 import { CheckoutSidebar, Container, Title } from "@/shared/components/shared"
 import { useCart } from "@/shared/hooks"
@@ -13,39 +18,20 @@ import {
   checkoutFormSchema,
   CheckoutFormValues,
 } from "@/shared/components/shared/checkout/checkout-form-schema"
-import { zodResolver } from "@hookform/resolvers/zod"
 import { createOreder } from "@/app/actions"
-import toast from "react-hot-toast"
-import React from "react"
-import { useSession } from "next-auth/react"
 import { Api } from "@/shared/services/api-client"
 
-export default function CheckoutPage() {
+function CheckoutContent() {
   const [submitting, setSubmitting] = React.useState(false)
   const { totalAmount, updateItemQuantity, items, removeCartItem, loading } = useCart()
-  const { data : session} = useSession();
-
-  React.useEffect(() => {
-    async function fetchUserInfo() {
-      const data = await Api.auth.getMe();
-      const [firstName, lastName] = data.fullName.split(' ');
-
-      form.setValue('firstName',  firstName);
-      form.setValue('lastName',  lastName);
-      form.setValue('email',  data.email);
-
-    }
-     if(session){
-      fetchUserInfo();
-    }
-  },[session])
+  const { data: session } = useSession()
 
   const form = useForm<CheckoutFormValues>({
     resolver: zodResolver(checkoutFormSchema),
     mode: "onBlur",
     defaultValues: {
       email: "",
-      firstName: '',
+      firstName: "",
       lastName: "",
       phone: "",
       address: "",
@@ -53,25 +39,48 @@ export default function CheckoutPage() {
     },
   })
 
+  React.useEffect(() => {
+    async function fetchUserInfo() {
+      try {
+        const data = await Api.auth.getMe()
+        const [firstName, ...lastNameParts] = data.fullName.split(" ")
+
+        form.setValue("firstName", firstName)
+        form.setValue("lastName", lastNameParts.join(" "))
+        form.setValue("email", data.email)
+      } catch (error) {
+        console.error("Не удалось загрузить данные пользователя:", error)
+      }
+    }
+
+    if (session) {
+      fetchUserInfo()
+    }
+  }, [session, form])
+
   const onSubmit = async (data: CheckoutFormValues) => {
     try {
       setSubmitting(true)
+
       const url = await createOreder(data)
 
-      toast.error("Заказ успешно оформлен! переход на оплату...", {
+      toast.success("Заказ успешно оформлен! Переход на оплату...", {
         icon: "✅",
       })
 
       if (url) {
-        location.href = url
+        window.location.href = url
+      } else {
+        setSubmitting(false)
       }
     } catch (err) {
-      console.log(err);
-      setSubmitting(false);
+      console.error(err)
+      setSubmitting(false)
+
       toast.error("Не удалось создать заказ", {
         icon: "❌",
       })
-    } 
+    }
   }
 
   const onClickCountButton = (
@@ -88,12 +97,11 @@ export default function CheckoutPage() {
       <Title
         text="Оформление заказа"
         className="mb-8 text-[36px] font-extrabold"
-      ></Title>
+      />
 
       <FormProvider {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)}>
           <div className="flex gap-10">
-            {/*Левая часть */}
             <div className="mb-20 flex flex-1 flex-col gap-10">
               <CheckoutCart
                 onClickCountButton={onClickCountButton}
@@ -111,17 +119,30 @@ export default function CheckoutPage() {
               />
             </div>
 
-            {/*Правая часть */}
             <div className="w-112.5">
               <CheckoutSidebar
                 submitting={submitting}
                 totalAmount={totalAmount}
                 loading={loading || submitting}
-              />{" "}
+              />
             </div>
           </div>
         </form>
       </FormProvider>
     </Container>
+  )
+}
+
+export default function CheckoutPage() {
+  return (
+    <Suspense
+      fallback={
+        <Container className="mt-5">
+          <p>Загрузка оформления заказа...</p>
+        </Container>
+      }
+    >
+      <CheckoutContent />
+    </Suspense>
   )
 }
